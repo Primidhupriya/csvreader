@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta content="en-in" http-equiv="Content-Language">
+<script src="jquery.min.js"></script>
+<style type="text/css">
+.auto-style1 {
+	text-align: center;
+	padding: 15px;
+}
+.auto-style2 {
+	font-size: xx-large;
+	font-family: "Times New Roman";
+}
+.auto-style3 {
+	font-size: xx-large;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	color: #FFFFFF;
+}
+</style>
+</head>
+<body style="background-color: #0066FF">
+<div class="auto-style1">
+	<br><br><br><br><br><span class="auto-style3"><strong>CSV READER</strong></span><strong><br class="auto-style2">
+	</strong><br><br><br><br><br><br>
+<input type="text" id="tbname" placeholder="Table Name" required><br><br>
+<input type="file" id="ipfile" required><br><br>
+<input type="button" id="submit" value="Process"><br><br>
+
+<script>
+const reader = new FileReader()
+var tbname=document.getElementById('tbname').value;
+document.getElementById('submit').addEventListener('click',function(){
+read(document.getElementById('ipfile'))
+});
+function read(input) {
+    if(tbname=="")
+    {
+      alert("Please enter missed details");
+    }
+    else{
+    const csv = input.files[0]
+	reader.readAsText(csv)
+    
+    }
+	
+}
+
+reader.onload = function (e) {
+var tbname=document.getElementById('tbname').value;
+var csvdata=e.target.result;
+
+if(tbname!="" && csvdata!="")
+{
+var data=csvdata.split('\r\n');
+var arr=[];
+for(let i=0;i<data.length;i++)
+{
+if(data[i]!="")
+{
+arr.push(data[i].split(','))
+}
+}
+
+console.log(arr)
+$.ajax({
+        url: "process.php",
+        type: "post",
+        data: {"data":arr,"tbname":tbname} ,
+        success: function (response) {
+		alert(response)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+           console.log(textStatus, errorThrown);
+        }
+    });
+
+}
+else
+{
+alert("Data missing. Please check");
+}
+}
+</script>
+
+</div>
+
+</body>
+</html>
